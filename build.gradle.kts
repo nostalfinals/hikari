@@ -4,7 +4,7 @@ plugins {
     java
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2" apply false
-    id("io.papermc.paperweight.patcher") version "1.4.1"
+    id("io.papermc.paperweight.patcher") version "1.4.0"
 }
 
 val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
@@ -17,9 +17,9 @@ repositories {
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.8.6:fat")
-    decompiler("org.quiltmc:quiltflower:1.9.0")
-    paperclip("io.papermc:paperclip:3.0.3-SNAPSHOT")
+   remapper("net.fabricmc:tiny-remapper:0.8.6:fat")
+   decompiler("net.minecraftforge:forgeflower:2.0.605.1")
+   paperclip("io.papermc:paperclip:3.0.2")
 }
 
 subprojects {
@@ -60,7 +60,7 @@ subprojects {
 }
 
 tasks.generateDevelopmentBundle {
-    apiCoordinates.set("cc.keyimc.keyi:keyi-api")
+    apiCoordinates.set("top.plutomc.hikari:hikari-api")
     mojangApiCoordinates.set("io.papermc.paper:paper-mojangapi")
     libraryRepositories.set(
         listOf(
