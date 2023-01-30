@@ -12,4 +12,4 @@ At the same time, the API will be also extended and powerful for those people wh
 
 # Licensing
 
-Every file is licensed under MIT License unless we noted another licence on the head of a file.
+Every file is licensed under MIT License unless we noted another license on the head of a file.
