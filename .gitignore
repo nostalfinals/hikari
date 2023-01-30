@@ -35,6 +35,6 @@ hs_err_pid*
 # Ignore Gradle build output directory
 build
 
-# KeYi
-/KeYi-API/
-/KeYi-Server/
+# hikari
+/hikari-api/
+/hikari-server/
