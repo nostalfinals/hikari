@@ -1,6 +1,6 @@
 # hikari
 
-A fast, stable, will supported server software for Minecraft: Java Edition.
+⚡ A fast, stable, will supported server software for Minecraft: Java Edition.
 
 ## Why another fork
 
