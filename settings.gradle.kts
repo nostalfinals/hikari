@@ -9,6 +9,6 @@ pluginManagement {
 
 rootProject.name = "hikari"
 for (name in listOf("hikari-api", "hikari-server")) {
-    include(projName)
+    include(name)
     findProject(":$name")!!.projectDir = file(name)
 }
