@@ -1,0 +1,63 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: nostalfinals <yuu8583@proton.me>
+Date: Mon, 30 Jan 2023 20:05:36 +0800
+Subject: [PATCH] Rebrand
+
+
+diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
+index 83571abfe9a2eb8736b481de35dfd7fd4c663f5a..d75822881aa56a669889e1544a018f079a61a6f5 100644
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -121,10 +121,22 @@ public final class Bukkit {
+         if ("master".equals(gitBranch) || "main".equals(gitBranch)) {
+             branchMsg = "";  // Don't show branch on main/master
+         }
+-        return "This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getBukkitVersion() + ") (Git: " + gitCommit + branchMsg + ")";
++        return "This server is running " + getName() + " version " + getHikariVersion() + " (Implementing API version " + getBukkitVersion() + ") (Git: " + gitCommit + branchMsg + ")"; // hikari
+         // Paper end
+     }
+ 
++    // hikari
++    /**
++     * Gets the version of hikari.
++     *
++     * @return version of hikari
++     */
++    @NotNull
++    public static String getHikariVersion() {
++        return server.getHikariVersion();
++    }
++    // hikari end
++
+     /**
+      * Gets the name of this server implementation.
+      *
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index e0f69edf603c2ec99bc92b16b18912272cc41bd9..5c2c97ebc901377ba859c0b066ea2157d280c0ee 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -59,6 +59,7 @@ import org.jetbrains.annotations.Nullable;
+ /**
+  * Represents a server implementation.
+  */
++@SuppressWarnings("unused") // hikari
+ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audience.ForwardingAudience { // Paper
+ 
+     /**
+@@ -105,6 +106,16 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+     @NotNull
+     public String getVersion();
+ 
++    // hikari
++    /**
++     * Gets the version of hikari.
++     *
++     * @return version of hikari
++     */
++    @NotNull
++    public String getHikariVersion();
++    // hikari end
++
+     /**
+      * Gets the Bukkit version that this server is running.
+      *

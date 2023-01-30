@@ -1,0 +1,185 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: nostalfinals <yuu8583@proton.me>
+Date: Mon, 30 Jan 2023 20:05:36 +0800
+Subject: [PATCH] Rebrand
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 020927dfe9624453311d1d171a10f44344ec8710..44abaf4d4cbb2d27b6b7b21412ee1cb686a0e8e6 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -7,7 +7,7 @@ plugins {
+ }
+ 
+ dependencies {
+-    implementation(project(":purpur-api")) // Purpur
++    implementation(project(":hikari-api")) // Purpur // hikari
+     // Pufferfish start
+     implementation("io.papermc.paper:paper-mojangapi:1.19.3-R0.1-SNAPSHOT") {
+         exclude("io.papermc.paper", "paper-api")
+@@ -83,7 +83,7 @@ tasks.jar {
+         attributes(
+             "Main-Class" to "org.bukkit.craftbukkit.Main",
+             "Implementation-Title" to "CraftBukkit",
+-            "Implementation-Version" to "git-Purpur-$implementationVersion", // Purpur
++            "Implementation-Version" to "git-hikari-$implementationVersion", // Purpur // hikari
+             "Implementation-Vendor" to date, // Paper
+             "Specification-Title" to "Bukkit",
+             "Specification-Version" to project.version,
+diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+index fba5dbdb7bcbb55400ef18342c9b54612972a718..fc125f74d3d2b8c7d0dbb37b2f25b0d703a8a437 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
++++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+@@ -4,27 +4,55 @@ import com.destroystokyo.paper.util.VersionFetcher;
+ import com.google.common.base.Charsets;
+ import com.google.common.io.Resources;
+ import com.google.gson.*;
++import io.papermc.paper.util.JarManifests;
+ import net.kyori.adventure.text.Component;
+ import net.kyori.adventure.text.event.ClickEvent;
+ import net.kyori.adventure.text.format.NamedTextColor;
+ import net.kyori.adventure.text.format.TextDecoration;
+ import net.kyori.adventure.text.TextComponent;
++import org.bukkit.Bukkit;
++import org.jetbrains.annotations.NotNull;
+ 
+ import javax.annotation.Nonnull;
+ import javax.annotation.Nullable;
+ import java.io.*;
+ import java.net.HttpURLConnection;
+ import java.net.URL;
++import java.util.Optional;
++import java.util.jar.Manifest;
+ import java.util.stream.StreamSupport;
+ 
+ public class PaperVersionFetcher implements VersionFetcher {
+     private static final java.util.regex.Pattern VER_PATTERN = java.util.regex.Pattern.compile("^([0-9\\.]*)\\-.*R"); // R is an anchor, will always give '-R' at end
+     // Purpur start
+-    private static final String DOWNLOAD_PAGE = "https://purpurmc.org/downloads";
++    private static final String DOWNLOAD_PAGE = "https://github.com/nostalfinals/hikari/releases";
+     private static int distance = -2; public int distance() { return distance; }
+     // Purpur end
+     private static @Nullable String mcVer;
+ 
++    // hikari start
++    @NotNull
++    public static String getHikariVersion() {
++        return "1.0.0";
++    }
++
++    @NotNull
++    public static Optional<String> getGitBranch() {
++        var manifest = getManifest();
++
++        if (manifest.isPresent()) {
++            return Optional.of(manifest.get().getMainAttributes().getValue("Git-Branch"));
++        }
++
++        return Optional.empty();
++    }
++
++    @NotNull
++    public static Optional<Manifest> getManifest() {
++        return Optional.ofNullable(JarManifests.manifest(Bukkit.getServer().getClass()));
++    }
++    // hikari end
++
+     @Override
+     public long getCacheTime() {
+         return 720000;
+@@ -33,8 +61,8 @@ public class PaperVersionFetcher implements VersionFetcher {
+     @Nonnull
+     @Override
+     public Component getVersionMessage(@Nonnull String serverVersion) {
+-        String[] parts = serverVersion.substring("git-Purpur-".length()).split("[-\\s]"); // Purpur
+-        final Component updateMessage = getUpdateStatusMessage("PurpurMC/Purpur", "ver/" + getMinecraftVersion(), parts[0]); // Purpur
++        String[] parts = serverVersion.substring("git-hikari-".length()).split("[-\\s]"); // Purpur
++        final Component updateMessage = getUpdateStatusMessage("nostalfinals/hikari", getGitBranch() + getMinecraftVersion(), parts[0]); // Purpur // hikari
+         final Component history = getHistory();
+ 
+         return history != null ? Component.join(net.kyori.adventure.text.JoinConfiguration.separator(Component.newline()), history, updateMessage) : updateMessage; // Purpur
+@@ -58,6 +86,10 @@ public class PaperVersionFetcher implements VersionFetcher {
+ 
+     private static Component getUpdateStatusMessage(@Nonnull String repo, @Nonnull String branch, @Nonnull String versionInfo) {
+         //int distance; // Purpur - use field
++
++        // hikari start
++
++        /*
+         try {
+             int jenkinsBuild = Integer.parseInt(versionInfo);
+             distance = fetchDistanceFromSiteApi(jenkinsBuild, getMinecraftVersion());
+@@ -65,6 +97,12 @@ public class PaperVersionFetcher implements VersionFetcher {
+             versionInfo = versionInfo.replace("\"", "");
+             distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
+         }
++         */
++
++        versionInfo = versionInfo.replace("\"", "");
++        distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
++
++        // hikari
+ 
+         switch (distance) {
+             case -1:
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 4a8aafd341fdad4b5ae326c4759b3381f5061fb5..ed64ee3def658515812c14f4e42a53f2aa642dc5 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -1,5 +1,6 @@
+ package org.bukkit.craftbukkit;
+ 
++import com.destroystokyo.paper.PaperVersionFetcher;
+ import com.google.common.base.Charsets;
+ import com.google.common.base.Function;
+ import com.google.common.base.Preconditions;
+@@ -262,7 +263,7 @@ import javax.annotation.Nullable; // Paper
+ import javax.annotation.Nonnull; // Paper
+ 
+ public final class CraftServer implements Server {
+-    private final String serverName = "Purpur"; // Paper // Purpur
++    private final String serverName = "hikari"; // Paper // Purpur // hikari
+     private final String serverVersion;
+     private final String bukkitVersion = Versioning.getBukkitVersion();
+     private final Logger logger = Logger.getLogger("Minecraft");
+@@ -643,6 +644,14 @@ public final class CraftServer implements Server {
+         return this.serverVersion + " (MC: " + this.console.getServerVersion() + ")";
+     }
+ 
++    // hikari
++    @Override
++    @NotNull
++    public String getHikariVersion() {
++        return PaperVersionFetcher.getHikariVersion();
++    }
++    // hikari end
++
+     @Override
+     public String getBukkitVersion() {
+         return this.bukkitVersion;
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index fb87620c742ff7912f5e8ccd2a7930dd605576d9..665b7b91aab0a22d9f9070752f600bb92edd46c3 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.purpurmc.purpur/purpur-api/pom.properties"); // Purpur
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/top.plutomc.hikari/hikari-api/pom.properties"); // Purpur // hikari
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
+diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
+index c7c0ed8dfe58c841faf684a1fe228eeda6cd57b7..d6628e2870274bd67fe12e3e5b8ca898603a008a 100644
+--- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
++++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
+@@ -227,7 +227,7 @@ public class PurpurConfig {
+         deathMessageOnlyBroadcastToAffectedPlayer = getBoolean("settings.broadcasts.death.only-broadcast-to-affected-player", deathMessageOnlyBroadcastToAffectedPlayer);
+     }
+ 
+-    public static String serverModName = "Purpur";
++    public static String serverModName = "hikari"; // hikari
+     private static void serverModName() {
+         serverModName = getString("settings.server-mod-name", serverModName);
+     }
